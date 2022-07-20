@@ -18,23 +18,38 @@ const Fetchdata = () => {
   const handleDate = (e) => {
     const slectedDate = new Date(e.target.value);
     setNotFormattedDate(e.target.value);
-    const dateFormated = `${slectedDate.getDate()}-${(
-      "0" + slectedDate.getMonth()
-    ).slice(-2)}-${slectedDate.getFullYear()}`;
+    const dateFormated = `${slectedDate.getDate()}-${
+      "0" + (slectedDate.getMonth() + 1)
+    }-${slectedDate.getFullYear()}`;
     setDate(dateFormated);
   };
 
   function isFutureDate(notFormattedDate) {
     const date = new Date(notFormattedDate);
     const today = new Date();
-    return date > today;
+    console.log(
+      "date === today",
+      date > today ||
+        (date.getDate() === today.getDate() &&
+          date.getMonth() === today.getMonth() &&
+          date.getFullYear() === today.getFullYear())
+    );
+    return (
+      date > today ||
+      (date.getDate() === today.getDate() &&
+        date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear())
+    );
   }
 
   const fetchData = async () => {
     const response = await fetch(
       `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=363&date=${date}`
+      // "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=363&date=20-07-2022"
     );
     const data = await response.json();
+    console.log(data);
     setTableData(data.centers.slice(0, 50));
     setShowTable(true);
   };
@@ -43,6 +58,7 @@ const Fetchdata = () => {
     isFutureDate(notFormattedDate)
       ? fetchData()
       : alert("Please select future date");
+    console.log("date", notFormattedDate);
   };
 
   return (
